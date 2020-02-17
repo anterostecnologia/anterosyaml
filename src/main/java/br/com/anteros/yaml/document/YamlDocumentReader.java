@@ -6,7 +6,7 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import br.com.anteros.yaml.Version;
-import br.com.anteros.yaml.YamlException;
+import br.com.anteros.yaml.AnterosYamlException;
 import br.com.anteros.yaml.parser.AliasEvent;
 import br.com.anteros.yaml.parser.Event;
 import br.com.anteros.yaml.parser.MappingStartEvent;
@@ -38,7 +38,7 @@ public class YamlDocumentReader {
 		parser = new Parser(reader, version);
 	}
 
-	public YamlDocument read() throws YamlException {
+	public YamlDocument read() throws AnterosYamlException {
 		try {
 			while (true) {
 				Event event = parser.peekNextEvent();
@@ -59,9 +59,9 @@ public class YamlDocumentReader {
 				}
 			}
 		} catch (ParserException ex) {
-			throw new YamlException("Error parsing YAML.", ex);
+			throw new AnterosYamlException("Error parsing YAML.", ex);
 		} catch (TokenizerException ex) {
-			throw new YamlException("Error tokenizing YAML.", ex);
+			throw new AnterosYamlException("Error tokenizing YAML.", ex);
 		}
 		
 	}

@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import br.com.anteros.yaml.YamlException;
-import br.com.anteros.yaml.YamlConfig.WriteConfig;
+import br.com.anteros.yaml.AnterosYamlException;
+import br.com.anteros.yaml.AnterosYamlConfig.WriteConfig;
 import br.com.anteros.yaml.emitter.Emitter;
 import br.com.anteros.yaml.emitter.EmitterException;
 import br.com.anteros.yaml.parser.Event;
@@ -34,7 +34,7 @@ public class YamlMapping extends YamlElement implements YamlDocument {
 		return false;
 	}
 
-	public YamlEntry getEntry(String key) throws YamlException {
+	public YamlEntry getEntry(String key) throws AnterosYamlException {
 		for(YamlEntry entry : entries) {
 			if(key.equals(entry.getKey().getValue()))
 				return entry;
@@ -42,7 +42,7 @@ public class YamlMapping extends YamlElement implements YamlDocument {
 		return null;
 	}
 	
-	public YamlEntry getEntry(int index) throws YamlException {
+	public YamlEntry getEntry(int index) throws AnterosYamlException {
 		return entries.get(index);
 	}
 
@@ -79,19 +79,19 @@ public class YamlMapping extends YamlElement implements YamlDocument {
 		emitter.emit(Event.MAPPING_END);
 	}
 	
-	public void setEntry(String key, boolean value) throws YamlException {
+	public void setEntry(String key, boolean value) throws AnterosYamlException {
 		setEntry(key, new YamlScalar(value));
 	}
 
-	public void setEntry(String key, Number value) throws YamlException {
+	public void setEntry(String key, Number value) throws AnterosYamlException {
 		setEntry(key, new YamlScalar(value));
 	}
 
-	public void setEntry(String key, String value) throws YamlException {
+	public void setEntry(String key, String value) throws AnterosYamlException {
 		setEntry(key, new YamlScalar(value));
 	}
 
-	public void setEntry(String key, YamlElement value) throws YamlException {
+	public void setEntry(String key, YamlElement value) throws AnterosYamlException {
 		YamlEntry entry = getEntry(key);
 		if(entry!=null)
 			entry.setValue(value);
@@ -102,43 +102,43 @@ public class YamlMapping extends YamlElement implements YamlDocument {
 		
 	}
 
-	public YamlElement getElement(int item) throws YamlException {
-		throw new YamlException("Can only get element on sequence!");
+	public YamlElement getElement(int item) throws AnterosYamlException {
+		throw new AnterosYamlException("Can only get element on sequence!");
 	}
 
-	public void deleteElement(int element) throws YamlException {
-		throw new YamlException("Can only delete element on sequence!");
+	public void deleteElement(int element) throws AnterosYamlException {
+		throw new AnterosYamlException("Can only delete element on sequence!");
 	}
 	
-	public void setElement(int item, boolean element) throws YamlException {
-		throw new YamlException("Can only set element on sequence!");
+	public void setElement(int item, boolean element) throws AnterosYamlException {
+		throw new AnterosYamlException("Can only set element on sequence!");
 	}
 
-	public void setElement(int item, Number element) throws YamlException {
-		throw new YamlException("Can only set element on sequence!");
+	public void setElement(int item, Number element) throws AnterosYamlException {
+		throw new AnterosYamlException("Can only set element on sequence!");
 	}
 
-	public void setElement(int item, String element) throws YamlException {
-		throw new YamlException("Can only set element on sequence!");
+	public void setElement(int item, String element) throws AnterosYamlException {
+		throw new AnterosYamlException("Can only set element on sequence!");
 	}
 
-	public void setElement(int item, YamlElement element) throws YamlException {
-		throw new YamlException("Can only set element on sequence!");
+	public void setElement(int item, YamlElement element) throws AnterosYamlException {
+		throw new AnterosYamlException("Can only set element on sequence!");
 	}
 
-	public void addElement(boolean element) throws YamlException {
-		throw new YamlException("Can only add element on sequence!");
+	public void addElement(boolean element) throws AnterosYamlException {
+		throw new AnterosYamlException("Can only add element on sequence!");
 	}
 
-	public void addElement(Number element) throws YamlException {
-		throw new YamlException("Can only add element on sequence!");
+	public void addElement(Number element) throws AnterosYamlException {
+		throw new AnterosYamlException("Can only add element on sequence!");
 	}
 
-	public void addElement(String element) throws YamlException {
-		throw new YamlException("Can only add element on sequence!");
+	public void addElement(String element) throws AnterosYamlException {
+		throw new AnterosYamlException("Can only add element on sequence!");
 	}
 
-	public void addElement(YamlElement element) throws YamlException {
-		throw new YamlException("Can only add element on sequence!");
+	public void addElement(YamlElement element) throws AnterosYamlException {
+		throw new AnterosYamlException("Can only add element on sequence!");
 	}
 }

@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2008 Nathan Sweet
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
- * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
- * is furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
- * IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package br.com.anteros.yaml;
 
 import java.io.IOException;
@@ -30,8 +14,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import br.com.anteros.yaml.Beans.Property;
-import br.com.anteros.yaml.YamlConfig.WriteClassName;
-import br.com.anteros.yaml.YamlConfig.WriteConfig;
+import br.com.anteros.yaml.AnterosYamlConfig.WriteClassName;
+import br.com.anteros.yaml.AnterosYamlConfig.WriteConfig;
 import br.com.anteros.yaml.document.YamlElement;
 import br.com.anteros.yaml.emitter.Emitter;
 import br.com.anteros.yaml.emitter.EmitterException;
@@ -47,9 +31,9 @@ import br.com.anteros.yaml.scalar.ScalarSerializer;
 import java.util.Set;
 
 /** Serializes Java objects as YAML.
- * @author <a href="mailto:misc@n4te.com">Nathan Sweet</a> */
-public class YamlWriter {
-	private final YamlConfig config;
+  */
+public class AnterosYamlWriter {
+	private final AnterosYamlConfig config;
 	private final Emitter emitter;
 	private boolean started;
 
@@ -61,11 +45,11 @@ public class YamlWriter {
 	private int nextAnchor = 1;
 	private boolean isRoot;
 
-	public YamlWriter (Writer writer) {
-		this(writer, new YamlConfig());
+	public AnterosYamlWriter (Writer writer) {
+		this(writer, new AnterosYamlConfig());
 	}
 
-	public YamlWriter (Writer writer, YamlConfig config) {
+	public AnterosYamlWriter (Writer writer, AnterosYamlConfig config) {
 		this.config = config;
 		emitter = new Emitter(writer, config.writeConfig.emitterConfig);
 	}
@@ -74,7 +58,7 @@ public class YamlWriter {
 		anchoredObjects.put(object, alias);
 	}
 
-	public void write (Object object) throws YamlException {
+	public void write (Object object) throws AnterosYamlException {
 		if (config.writeConfig.autoAnchor) {
 			countObjectReferences(object);
 			queuedObjects.add(object);
@@ -83,11 +67,11 @@ public class YamlWriter {
 		writeInternal(object);
 	}
 
-	public YamlConfig getConfig () {
+	public AnterosYamlConfig getConfig () {
 		return config;
 	}
 
-	private void writeInternal (Object object) throws YamlException {
+	private void writeInternal (Object object) throws AnterosYamlException {
 		try {
 			if (!started) {
 				emitter.emit(Event.STREAM_START);
@@ -98,9 +82,9 @@ public class YamlWriter {
 			writeValue(object, config.writeConfig.writeRootTags ? null : object.getClass(), null, null);
 			emitter.emit(new DocumentEndEvent(config.writeConfig.explicitEndDocument));
 		} catch (EmitterException ex) {
-			throw new YamlException("Error writing YAML.", ex);
+			throw new AnterosYamlException("Error writing YAML.", ex);
 		} catch (IOException ex) {
-			throw new YamlException("Error writing YAML.", ex);
+			throw new AnterosYamlException("Error writing YAML.", ex);
 		}
 	}
 
@@ -111,7 +95,7 @@ public class YamlWriter {
 
 	/** Writes any buffered objects, then resets the list of anchored objects.
 	 * @see WriteConfig#setAutoAnchor(boolean) */
-	public void clearAnchors () throws YamlException {
+	public void clearAnchors () throws AnterosYamlException {
 		for (Object object : queuedObjects)
 			writeInternal(object);
 		queuedObjects.clear();
@@ -120,22 +104,22 @@ public class YamlWriter {
 	}
 
 	/** Finishes writing any buffered output and releases all resources.
-	 * @throws YamlException If the buffered output could not be written or the writer could not be closed. */
-	public void close () throws YamlException {
+	 * @throws AnterosYamlException If the buffered output could not be written or the writer could not be closed. */
+	public void close () throws AnterosYamlException {
 		clearAnchors();
 		defaultValuePrototypes.clear();
 		try {
 			emitter.emit(Event.STREAM_END);
 			emitter.close();
 		} catch (EmitterException ex) {
-			throw new YamlException(ex);
+			throw new AnterosYamlException(ex);
 		} catch (IOException ex) {
-			throw new YamlException(ex);
+			throw new AnterosYamlException(ex);
 		}
 	}
 
 	private void writeValue (Object object, Class fieldClass, Class elementType, Class defaultType)
-		throws EmitterException, IOException, YamlException {
+		throws EmitterException, IOException, AnterosYamlException {
 		boolean isRoot = this.isRoot;
 		this.isRoot = false;
 
@@ -276,7 +260,7 @@ public class YamlWriter {
 				try {
 					prototype = Beans.createObject(valueClass, config.privateConstructors);
 				} catch (InvocationTargetException ex) {
-					throw new YamlException("Error creating object prototype to determine default values.", ex);
+					throw new AnterosYamlException("Error creating object prototype to determine default values.", ex);
 				}
 				defaultValuePrototypes.put(valueClass, prototype);
 			}
@@ -299,13 +283,13 @@ public class YamlWriter {
 				Class propertyDefaultType = config.propertyToDefaultType.get(property);
 				writeValue(propertyValue, property.getType(), propertyElementType, propertyDefaultType);
 			} catch (Exception ex) {
-				throw new YamlException("Error getting property '" + property + "' on class: " + valueClass.getName(), ex);
+				throw new AnterosYamlException("Error getting property '" + property + "' on class: " + valueClass.getName(), ex);
 			}
 		}
 		emitter.emit(Event.MAPPING_END);
 	}
 
-	private void countObjectReferences (Object object) throws YamlException {
+	private void countObjectReferences (Object object) throws AnterosYamlException {
 		if (object == null || Beans.isScalar(object.getClass())) return;
 
 		// Count every reference to the object, but follow its own references the first time it is encountered.
@@ -343,7 +327,7 @@ public class YamlWriter {
 			try {
 				propertyValue = property.get(object);
 			} catch (Exception ex) {
-				throw new YamlException("Error getting property '" + property + "' on class: " + object.getClass().getName(), ex);
+				throw new AnterosYamlException("Error getting property '" + property + "' on class: " + object.getClass().getName(), ex);
 			}
 			countObjectReferences(propertyValue);
 		}

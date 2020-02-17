@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2008 Nathan Sweet
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
- * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
- * is furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
- * IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package br.com.anteros.yaml;
 
 import java.lang.reflect.Constructor;
@@ -30,9 +14,8 @@ import br.com.anteros.yaml.emitter.EmitterConfig;
 import br.com.anteros.yaml.scalar.DateSerializer;
 import br.com.anteros.yaml.scalar.ScalarSerializer;
 
-/** Stores configuration for reading and writing YAML.
- * @author <a href="mailto:misc@n4te.com">Nathan Sweet</a> */
-public class YamlConfig {
+/** Stores configuration for reading and writing YAML.*/
+public class AnterosYamlConfig {
 	/** Configuration for writing YAML. */
 	public final WriteConfig writeConfig = new WriteConfig();
 
@@ -50,7 +33,7 @@ public class YamlConfig {
 	boolean allowDuplicates = true;
 	String tagSuffix;
 
-	public YamlConfig () {
+	public AnterosYamlConfig () {
 		scalarSerializers.put(Date.class, new DateSerializer());
 
 		tagToClass.put("tag:yaml.org,2002:str", String.class);
@@ -158,14 +141,14 @@ public class YamlConfig {
 
 		/** If true, the root of each YAML document will have a tag defining the class that was written, if necessary. Tags are not
 		 * necessary for primitive types, Strings, {@link ArrayList}, or {@link HashMap}. It is useful to set this to false when
-		 * planning to read the object with the {@link YamlReader#read(Class)} method. Default is true. */
+		 * planning to read the object with the {@link AnterosYamlReader#read(Class)} method. Default is true. */
 		public void setWriteRootTags (boolean writeRootTags) {
 			this.writeRootTags = writeRootTags;
 		}
 
 		/** If true, the elements of a Collection or Map root for each YAML document will have a tag defining the class that was
 		 * written, if necessary. Tags are not necessary for primitive types, Strings, {@link ArrayList}, or {@link HashMap}. It is
-		 * useful to set this to false when planning to read the object with the {@link YamlReader#read(Class, Class)} method.
+		 * useful to set this to false when planning to read the object with the {@link AnterosYamlReader#read(Class, Class)} method.
 		 * Default is true. */
 		public void setWriteRootElementTags (boolean writeRootElementTags) {
 			this.writeRootElementTags = writeRootElementTags;
@@ -178,9 +161,9 @@ public class YamlConfig {
 		}
 
 		/** If true, values that are referenced multiple times will use an anchor. This works across YAML documents (ie multiple
-		 * calls to {@link YamlWriter#write(Object)}). When true, objects are not actually written until
-		 * {@link YamlWriter#clearAnchors()} or {@link YamlWriter#close()} is called. If changing auto anchor to false,
-		 * {@link YamlWriter#clearAnchors()} should be called first to output any buffered objects. Default is true. */
+		 * calls to {@link AnterosYamlWriter#write(Object)}). When true, objects are not actually written until
+		 * {@link AnterosYamlWriter#clearAnchors()} or {@link AnterosYamlWriter#close()} is called. If changing auto anchor to false,
+		 * {@link AnterosYamlWriter#clearAnchors()} should be called first to output any buffered objects. Default is true. */
 		public void setAutoAnchor (boolean autoAnchor) {
 			this.autoAnchor = autoAnchor;
 		}
@@ -272,7 +255,7 @@ public class YamlConfig {
 			constructorParameters.put(type, parameters);
 		}
 
-		/** When true, fields in the YAML that are not found on the class will not throw a {@link YamlException}. Default is
+		/** When true, fields in the YAML that are not found on the class will not throw a {@link AnterosYamlException}. Default is
 		 * false. */
 		public void setIgnoreUnknownProperties (boolean allowUnknownProperties) {
 			this.ignoreUnknownProperties = allowUnknownProperties;

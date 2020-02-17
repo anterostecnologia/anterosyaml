@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2008 Nathan Sweet
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
- * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
- * is furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
- * IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package br.com.anteros.yaml;
 
 import static br.com.anteros.yaml.parser.EventType.*;
@@ -42,30 +26,30 @@ import br.com.anteros.yaml.scalar.ScalarSerializer;
 import br.com.anteros.yaml.tokenizer.Tokenizer.TokenizerException;
 
 /** Deserializes Java objects from YAML.
- * @author <a href="mailto:misc@n4te.com">Nathan Sweet</a> */
-public class YamlReader {
-	private final YamlConfig config;
+ */
+public class AnterosYamlReader {
+	private final AnterosYamlConfig config;
 	Parser parser;
 	private final Map<String, Object> anchors = new HashMap();
 
-	public YamlReader (Reader reader) {
-		this(reader, new YamlConfig());
+	public AnterosYamlReader (Reader reader) {
+		this(reader, new AnterosYamlConfig());
 	}
 
-	public YamlReader (Reader reader, YamlConfig config) {
+	public AnterosYamlReader (Reader reader, AnterosYamlConfig config) {
 		this.config = config;
 		parser = new Parser(reader, config.readConfig.defaultVersion);
 	}
 
-	public YamlReader (String yaml) {
+	public AnterosYamlReader (String yaml) {
 		this(new StringReader(yaml));
 	}
 
-	public YamlReader (String yaml, YamlConfig config) {
+	public AnterosYamlReader (String yaml, AnterosYamlConfig config) {
 		this(new StringReader(yaml), config);
 	}
 
-	public YamlConfig getConfig () {
+	public AnterosYamlConfig getConfig () {
 		return config;
 	}
 
@@ -82,19 +66,19 @@ public class YamlReader {
 
 	/** Reads the next YAML document and deserializes it into an object. The type of object is defined by the YAML tag. If there is
 	 * no YAML tag, the object will be an {@link ArrayList}, {@link HashMap}, or String. */
-	public Object read () throws YamlException {
+	public Object read () throws AnterosYamlException {
 		return read(null);
 	}
 
 	/** Reads an object of the specified type from YAML.
 	 * @param type The type of object to read. If null, behaves the same as {{@link #read()}. */
-	public <T> T read (Class<T> type) throws YamlException {
+	public <T> T read (Class<T> type) throws AnterosYamlException {
 		return read(type, null);
 	}
 
 	/** Reads an array, Map, List, or Collection object of the specified type from YAML, using the specified element type.
 	 * @param type The type of object to read. If null, behaves the same as {{@link #read()}. */
-	public <T> T read (Class<T> type, Class elementType) throws YamlException {
+	public <T> T read (Class<T> type, Class elementType) throws AnterosYamlException {
 		try {
 			while (true) {
 				Event event = parser.getNextEvent();
@@ -104,15 +88,15 @@ public class YamlReader {
 			}
 			return (T)readValue(type, elementType, null);
 		} catch (ParserException ex) {
-			throw new YamlException("Error parsing YAML.", ex);
+			throw new AnterosYamlException("Error parsing YAML.", ex);
 		} catch (TokenizerException ex) {
-			throw new YamlException("Error tokenizing YAML.", ex);
+			throw new AnterosYamlException("Error tokenizing YAML.", ex);
 		}
 	}
 
 	/** Reads an object from the YAML. Can be overidden to take some action for any of the objects returned. */
 	protected Object readValue (Class type, Class elementType, Class defaultType)
-		throws YamlException, ParserException, TokenizerException {
+		throws AnterosYamlException, ParserException, TokenizerException {
 		String tag = null, anchor = null;
 		Event event = parser.peekNextEvent();
 
@@ -166,7 +150,7 @@ public class YamlReader {
 		return providedType;
 	}
 
-	/** Used during reading when a tag is present, and {@link YamlConfig#setClassTag(String, Class)} was not used for that tag.
+	/** Used during reading when a tag is present, and {@link AnterosYamlConfig#setClassTag(String, Class)} was not used for that tag.
 	 * Attempts to load the class corresponding to that tag.
 	 * 
 	 * If this returns a non-null Class, that will be used as the deserialization type regardless of whether a type was explicitly
@@ -192,7 +176,7 @@ public class YamlReader {
 	}
 
 	private Object readValueInternal (Class type, Class elementType, String anchor)
-		throws YamlException, ParserException, TokenizerException {
+		throws AnterosYamlException, ParserException, TokenizerException {
 		if (type == null || type == Object.class) {
 			Event event = parser.peekNextEvent();
 			switch (event.type) {
@@ -279,7 +263,7 @@ public class YamlReader {
 				} else if (type == Byte.class) {
 					convertedValue = value == null ? null : Byte.decode(value);
 				} else
-					throw new YamlException("Unknown field type.");
+					throw new AnterosYamlException("Unknown field type.");
 				if (anchor != null) anchors.put(anchor, convertedValue);
 				return convertedValue;
 			} catch (Exception ex) {
@@ -463,7 +447,7 @@ public class YamlReader {
 		return Beans.createObject(type, config.privateConstructors);
 	}
 
-	public class YamlReaderException extends YamlException {
+	public class YamlReaderException extends AnterosYamlException {
 		public YamlReaderException (String message, Throwable cause) {
 			super("Line " + parser.getLineNumber() + ", column " + parser.getColumn() + ": " + message, cause);
 		}
@@ -474,7 +458,7 @@ public class YamlReader {
 	}
 
 	public static void main (String[] args) throws Exception {
-		YamlReader reader = new YamlReader(new FileReader("test/test.yml"));
+		AnterosYamlReader reader = new AnterosYamlReader(new FileReader("test/test.yml"));
 		System.out.println(reader.read());
 	}
 }

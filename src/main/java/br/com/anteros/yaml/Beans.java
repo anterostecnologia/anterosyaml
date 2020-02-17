@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2008 Nathan Sweet
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
- * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
- * is furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
- * IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package br.com.anteros.yaml;
 
 import java.lang.annotation.Annotation;
@@ -36,10 +20,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import br.com.anteros.yaml.YamlConfig.ConstructorParameters;
+import br.com.anteros.yaml.AnterosYamlConfig.ConstructorParameters;
 
 /** Utility for dealing with beans and public fields.
- * @author <a href="mailto:misc@n4te.com">Nathan Sweet</a> */
+ */
 class Beans {
 	private Beans () {
 	}
@@ -49,7 +33,7 @@ class Beans {
 			|| c == Long.class || c == Double.class || c == Short.class || c == Byte.class || c == Character.class;
 	}
 
-	static public DeferredConstruction getDeferredConstruction (Class type, YamlConfig config) {
+	static public DeferredConstruction getDeferredConstruction (Class type, AnterosYamlConfig config) {
 		ConstructorParameters parameters = config.readConfig.constructorParameters.get(type);
 		if (parameters != null) return new DeferredConstruction(parameters.constructor, parameters.parameterNames);
 		try {
@@ -110,7 +94,7 @@ class Beans {
 		}
 	}
 
-	static public Set<Property> getProperties (Class type, boolean beanProperties, boolean privateFields, YamlConfig config) {
+	static public Set<Property> getProperties (Class type, boolean beanProperties, boolean privateFields, AnterosYamlConfig config) {
 		if (type == null) throw new IllegalArgumentException("type cannot be null.");
 		Class[] noArgs = new Class[0], oneArg = new Class[1];
 		Set<Property> properties = config.writeConfig.keepBeanPropertyOrder ? new LinkedHashSet() : new TreeSet();
@@ -166,7 +150,7 @@ class Beans {
 	}
 
 	static public Property getProperty (Class type, String name, boolean beanProperties, boolean privateFields,
-		YamlConfig config) {
+		AnterosYamlConfig config) {
 		if (type == null) throw new IllegalArgumentException("type cannot be null.");
 		if (name == null || name.length() == 0) throw new IllegalArgumentException("name cannot be null or empty.");
 		name = toJavaIdentifier(name);
